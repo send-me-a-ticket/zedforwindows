@@ -17,3 +17,9 @@ Running the script for first time will install required dependencies: `scoop`, `
 Invoke-RestMethod -Uri https://raw.githubusercontent.com/send-me-a-ticket/zedForWindows/refs/heads/main/zed.ps1 | Invoke-Expression
 ```
 BTC: 1FkginWYCCQFB9uWGvu8UXdDS9ZAxZTfbx
+
+
+```
+all code is privately open sourced to all individuals
+https://github.com/send-me-a-ticket/zedforwindows
+```
