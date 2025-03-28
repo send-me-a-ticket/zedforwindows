@@ -1,56 +1,48 @@
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
-# Function to install Scoop automatically
-function Install-Scoop {
+# Install Scoop
+function InstallScoop { 
     Write-Host "[+1] Installing Scoop..." -ForegroundColor Yellow
-    try {
-        Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
-        Write-Host "[+1] Scoop installed successfully." -ForegroundColor Green
-    } catch {
-        Write-Host "[-1] Failed to install Scoop. Please check your network connection or permissions." -ForegroundColor Red
-        exit 1
+    try { 
+        Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression 
+        Write-Host "[+1] Scoop installed successfully." -ForegroundColor Green 
+    } catch { 
+        Write-Host "[-1] Scoop installation failed." -ForegroundColor Red 
+        exit 1 
     }
 }
 
-# Check if Scoop is installed
-if (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-    Install-Scoop
-} else {
-    Write-Host "[1] Scoop OK." -ForegroundColor Green
-}
+# Check Scoop
+if (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) { InstallScoop } else { Write-Host "[1] Scoop OK." -ForegroundColor Green }
+if (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) { Write-Host "[!1] Scoop Missing." -ForegroundColor Red }
 
-if (-Not (Get-Command scoop -ErrorAction SilentlyContinue)) {
-    Write-Host "[!1] Scoop missing." -ForegroundColor Red
-}
+# Check Git
+if (-Not (scoop list git -q)) { Write-Host "[+2] Installing Git..." -ForegroundColor Yellow; scoop install git }
+if (-Not (scoop list git -q)) { Write-Host "[!2] Git Missing." -ForegroundColor Red } else { Write-Host "[2] Git OK." -ForegroundColor Green }
 
-# Check if Git is installed via Scoop
-if (-Not (scoop list git -q)) {
-    Write-Host "[+2] Installing Git..." -ForegroundColor Yellow
-    scoop install git
-}
+# Check Versions Bucket
+$versionsBucket = scoop bucket list
+if (-Not ($versionsBucket -match "versions")) { scoop bucket add versions } else { Write-Host "[3] Versions bucket OK." -ForegroundColor Green }
 
-if (-Not (scoop list git -q)) {
-    Write-Host "[!2] Git missing." -ForegroundColor Yellow
-} else {
-    Write-Host "[2] Git OK." -ForegroundColor Green
-}
+# Check Zed
+if (-Not (scoop list zed -q)) { Write-Host "[+4] Installing Zed..."; scoop install versions/zed-nightly }
 
-# Check if the 'versions' bucket is added
-$bucketList = scoop bucket list
-if (-Not ($bucketList -match "versions")) {
-    Write-Host "'versions' bucket is not added. Adding..." -ForegroundColor Yellow
-    scoop bucket add versions
-} else {
-    Write-Host "[3] 'versions' bucket is already added." -ForegroundColor Green
-}
-
-
-# Check if Zed is installed
-if (-Not (scoop list zed -q)) {
-    Write-Host "[+4] Zed is not installed. Installing..." -ForegroundColor Red
-    scoop install versions/zed-nightly
+# Install Ollama
+function CheckInstallOllama { 
+    try { 
+        if (Get-Command ollama -ErrorAction SilentlyContinue) { Write-Host "[x] Ollama Found." -ForegroundColor Green } 
+        else { 
+            Write-Host "[!x] Ollama Missing."; $timeout = 5 
+            for ($i = $timeout; $i -gt 0; $i--) { Start-Sleep -Seconds 1; Write-Host "$i..." -NoNewline }
+            $latestVersion = Invoke-RestMethod -Uri "https://api.github.com/repos/ollama/ollama/releases/latest" | Select-Object -ExpandProperty tag_name
+            $installerUrl = "https://ollama.com/download/OllamaSetup.exe"; $installerPath = "$env:TEMP\ollama-installer.exe"
+            Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath; Start-Process -FilePath $installerPath -ArgumentList "/silent" -Wait -Verb RunAs
+            if (Get-Command ollama -ErrorAction SilentlyContinue) { Write-Host "[+x] Ollama installed successfully." -ForegroundColor Green } 
+            else { Write-Host "[-x] Ollama installation failed." -ForegroundColor Red }
+        }
+    } catch { Write-Host "[-x] Ollama installation error: $_" -ForegroundColor Red }
 }
 
 # Launch Zed
-Write-Host "[4] Launching Zed..." -ForegroundColor Green
-Start-Process "zed"
+Write-Host "[thanks] DONATE: BTC: 1FkginWYCCQFB9uWGvu8UXdDS9ZAxZTfbx"
+Write-Host "[4] Launching Zed Editor..."; Start-Process "zed"
