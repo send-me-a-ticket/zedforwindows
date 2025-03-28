@@ -11,6 +11,3 @@ Running the script for first time will install required dependencies: `scoop`, `
 ```
 Invoke-RestMethod -Uri https://raw.githubusercontent.com/send-me-a-ticket/zedForWindows/refs/heads/main/zed.ps1 | Invoke-Expression
 ```
-
-## Option 3: Download Yourself
-### Download and run [this ps1 script from your powershell terminal.](https://github.com/send-me-a-ticket/zedForWindows/blob/main/zed.ps1)
