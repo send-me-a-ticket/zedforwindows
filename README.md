@@ -11,7 +11,7 @@ Running the script for first time will install required dependencies: `scoop`, `
 
 
 
-## Option 2: Copy ' Paste
+## Option 2: Copy n' Paste
 ### Copy the below command to your terminal & run.
 ```
 Invoke-RestMethod -Uri https://raw.githubusercontent.com/send-me-a-ticket/zedForWindows/refs/heads/main/zed.ps1 | Invoke-Expression
