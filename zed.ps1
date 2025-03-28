@@ -46,3 +46,4 @@ function CheckInstallOllama {
 # Launch Zed
 Write-Host "[thanks] DONATE: BTC: 1FkginWYCCQFB9uWGvu8UXdDS9ZAxZTfbx"
 Write-Host "[4] Launching Zed Editor..."; Start-Process "zed"
+pause
