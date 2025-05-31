@@ -24,9 +24,9 @@ if (-Not (scoop list git -q)) { Write-Host "[!2] Git Missing." -ForegroundColor 
 $versionsBucket = scoop bucket list
 if (-Not ($versionsBucket -match "versions")) { scoop bucket add versions } else { Write-Host "[3] Versions bucket OK." -ForegroundColor Green }
 
-# Check Zed
+# Check Zed and update
 if (-Not (scoop list zed -q)) { Write-Host "[+4] Installing Zed..."; scoop install versions/zed-nightly }
-
+scoop update zed-nightly
 # Install Ollama
 function CheckInstallOllama { 
     try { 
